@@ -8,9 +8,9 @@
 
 # useMemo를 이용한 최적화
 
-- A.js - 모든 요소를 하나의 컴포넌트에 작성
+- <a href='https://github.com/hwadong119/react-performance-app/blob/main/src/components/A.js'>A.js</a> - 모든 요소를 하나의 컴포넌트에 작성
 
-- B.js - 여러 컴포넌트로 나눠서 작성
+- <a href='https://github.com/hwadong119/react-performance-app/blob/main/src/components/B.js'>B.js</a> - 여러 컴포넌트로 나눠서 작성
 
 <br>
 
