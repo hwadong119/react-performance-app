@@ -1,70 +1,159 @@
-# Getting Started with Create React App
+# 리액트 앱 성능 개선하기
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<br>
 
-## Available Scripts
+# useMemo를 이용한 최적화
 
-In the project directory, you can run:
+- A.js - 모든 요소를 하나의 컴포넌트에 작성
 
-### `npm start`
+- B.js - 여러 컴포넌트로 나눠서 작성
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+<br>
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+![Alt text](image.png)
 
-### `npm test`
+<br><br>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# React Profiler로 성능 측정
 
-### `npm run build`
+- 프로파일링을 수행해서 성능 데이터를 기록하고 측정
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Profiler는 컴포넌트가 재렌더링이 될 때마다 성능을 기록
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<br>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![Alt text](image-1.png)
 
-### `npm run eject`
+start profiling (파란) 버튼 클릭
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+<br>
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+![Alt text](image-3.png)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+hello 입력
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+<br>
 
-## Learn More
+![Alt text](image-6.png)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+stop profiling (빨간) 버튼 클릭
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+<br>
 
-### Code Splitting
+![Alt text](image-4.png)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- A 컴포넌트가 B 컴포넌트 보다 성능이 좋음
 
-### Analyzing the Bundle Size
+<br><br>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+# 현재 B 컴포넌트의 문제점 
 
-### Making a Progressive Web App
+- 현재 B 컴포넌트는 B, List, ListItem, Messsage 컴포넌트로 나뉘어져 있음
+  - 재사용성을 위해
+  - 각 컴포넌트의 렌더링의 최적화를 위해
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Input에서 글을 타이핑 할 때 원래는 Message 컴포넌트와 그 State 값을 가지고 있는 App 컴포넌트만 되어야 하는데 현재는 상관이 없는 다른 부분까지 렌더링 되고 있음
 
-### Advanced Configuration
+<br><br>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+# React.memo를 이용하여 성능 최적화
 
-### Deployment
+각 컴포넌트를 React.memo()로 감싸주면 필요한 부분만 렌더링 됨
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```javascript
+const Message = React.memo(({ message }) =>{
+  return <p>{message}</p>;
+})
 
-### `npm run build` fails to minify
+const ListItem = React.memo(({ post }) => {
+  return (
+    <li key={post.id}>
+      <p>{post.title}</p>
+    </li>
+  );
+})
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+const List = React.memo(({ posts }) => {
+  return (
+    <ul>
+      {posts.map(post => 
+        <ListItem key={post.id} post={post} />
+      )}
+    </ul>
+  );
+})
+```
+
+<br><br>
+
+# React Profiler 재측정
+
+![Alt text](image-7.png)
+
+- B 성능 향상
+
+<br><br>
+
+# React.memo() 
+- React는 먼저 컴포넌트를 렌더링한 뒤, 이전에 렌더링 된 결과와 비교하여 DOM 업데이트를 결정
+
+- 렌더링 결과가 이전과 다르다면, React는 DOM을 업데이트 함
+
+- 이 과정에서 만약 컴포넌트가 React.memo()로 둘러 쌓여 있다면, React는 컴포넌트를 렌더링하고 결과를 메모이징(Memoizing)한다. 그리고 다음 렌더링이 일어날 때 렌더링하는 컴포넌트의 props가 같다면 React는 메모이징된 내용을 재사용함
+
+- 메모이제이션(Memoization) : 주어진 입력값에 대한 결과를 저장함으로써 같은 입력값에 대해 함수가 한번만 실행되는 것을 보장
+
+<br><br>
+
+# React Memo가 props를 비교하는 방법
+
+React.memo()는 props 혹은 props의 객체를 비교할 때 **얕은 (shallow) 비교**를함
+
+### 얕은 비교
+- 숫자, 문자열 등 원시 자료형은 값을 비교
+
+- 배열, 객체 등 참조 자료형은 값 혹은 속성을 비교하지 않고, 참조되는 위치를 비교
+
+- React.memo()에서 props를 비교할 때, 리액트 컴포넌트가 리렌더링을 하기 전 얕은 비교 사용
+
+### 깊은 비교
+- 얕은 비교와 달리 깊은 비교는 객체의 경우에도 값으로 비교
+
+- Object depth가 깊지 않은 경우: JSON.stringify() 사용
+
+- Object depth가 깊은 경우: lodash 라이브러리의 isEqual() 사용
+
+### 리액트가 리렌더링 되는 경우
+- state 변경이 있을 때
+
+- 부모 컴포넌트가 렌더링 될 때
+
+- 새로운 props이 들어올 때
+
+- shouldComponentUpdate에서 true가 반환될 때
+
+- forceUpdate가 실행될 때
+
+<br><br>
+
+# React Meomo의 Props 비교 방식 수정하기 
+
+비교 방식을 원하는 대로 수정하고 싶다면 React.memo()의 두 번째 매개변수로 비교함수를 넣어주면 됨
+
+```javascript
+// a, b, c, d 중에 a와 b만 비교하고 싶을 때
+React.memo(Component, [compareFunction(prevProps, nextProps)])
+
+function compareFunction(prevProps, nextProps) {
+  return (
+    prevProps.a === nextProps.a &&
+    prevProps.b === nextProps.b
+  )
+}
+```
+
+<br><br>
+
+### ❗️React.memo 사용은 항상 좋은 것은 아니기에 profiler를 이용해서 성능 상 이점이 있는지 확인 후 사용
+
+<br><br>
