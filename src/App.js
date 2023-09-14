@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import A from './components/A';
 import B from './components/B';
-import B_Memo from './components/B_Memo';
+import B_Memo from './components/B_useCallback';
 
 function App() {
 

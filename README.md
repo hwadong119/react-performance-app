@@ -61,3 +61,25 @@ useCallback으로 인해 의존성 배열에 추가해준 state 혹은 props가 
 새로 생성되지 않기에 메모리에 새로 할당되지 않고 동일 참조 값을 사용하게 됨
 
 의존성 배열에 아무것도 없다면 컴포넌트가 최초 렌더링 시에만 함수가 생성되며 그 이후에는 동일한 참조값을 사용하는 함수가 됨
+
+<br><br>
+
+# 적용
+
+```javascript
+const B_Memo = ({ message, posts }) => {
+  console.log('B component is Rendering');
+  const testFunction = useCallback(() => {}, []);
+  return (
+    <div>
+      <h1>B Component</h1>
+      <Message message={message} />
+      <List posts={posts} testFunction={testFunction}/>
+    </div>
+  )
+}
+```
+
+![Alt text](image/image_1.png)
+
+이제 B 컴포넌트만 렌더링됨
