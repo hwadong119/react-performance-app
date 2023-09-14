@@ -10,7 +10,7 @@
 
 <br>
 
-![Alt text](image.png)
+![Alt text](./image/image.png)
 
 <br><br>
 
@@ -22,25 +22,25 @@
 
 <br>
 
-![Alt text](image-1.png)
+![Alt text](./image/image-1.png)
 
 start profiling (파란) 버튼 클릭
 
 <br>
 
-![Alt text](image-3.png)
+![Alt text](./image/image-3.png)
 
 hello 입력
 
 <br>
 
-![Alt text](image-6.png)
+![Alt text](./image/image-6.png)
 
 stop profiling (빨간) 버튼 클릭
 
 <br>
 
-![Alt text](image-4.png)
+![Alt text](./image/image-4.png)
 
 - A 컴포넌트가 B 컴포넌트 보다 성능이 좋음
 
@@ -88,7 +88,7 @@ const List = React.memo(({ posts }) => {
 
 # React Profiler 재측정
 
-![Alt text](image-7.png)
+![Alt text](./image/image-7.png)
 
 - B 성능 향상
 
