@@ -2,6 +2,10 @@
 
 <br>
 
+<a href='https://github.com/hwadong119/react-performance-app/tree/main'>useMemo를 이용한 최적화</a>
+
+<br>
+
 # useCallback을 이용한 최적화
 컴포넌트가 렌더링 될 때 그 안에 있는 함수도 다시 만들게 됨
 
